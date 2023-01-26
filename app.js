@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const Campground = require('./models/campground');
-
+const methodOverride = require('method-override');
 
 // Mongoose 연결하기.
 mongoose.set('strictQuery', false);
@@ -17,7 +17,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({ extended: true }))
-
+app.use(methodOverride('_method'))
 
 app.get('/', (req, res) => {
 	res.render('./home.ejs');
@@ -52,6 +52,15 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
 	res.render('campgrounds/edit', { campground })
 })
 
+app.put('/campgrounds/:id', async (req, res) => {
+	const campground = await Campground.findByIdAndUpdate(req.params.id, { ...req.body.campground })
+	res.redirect(`/campgrounds/${campground._id}`);
+})
+
+app.delete('/campgrounds/:id', async (req, res) => {
+	await Campground.findByIdAndDelete(req.params.id);
+	res.redirect('/campgrounds');
+});
 
 
 app.listen(3000, () => console.log('listening on port 3000'));
