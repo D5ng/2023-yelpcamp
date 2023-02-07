@@ -1,7 +1,11 @@
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
+
+// Model
 const Campground = require("./models/campground");
+const Reivew = require("./models/reviews");
+
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
@@ -103,6 +107,19 @@ app.delete(
   })
 );
 
+app.post(
+  "/campgrounds/:id/reviews",
+  catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+
+    campground.reviews.push(review);
+
+    await review.save();
+    await campground.save();
+  })
+);
+
 app.all("*", (req, res, next) => next(new ExpressError("Page Not Found", 404)));
 
 app.use((err, req, res, next) => {
@@ -111,3 +128,8 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(3000, () => console.log("listening on port 3000"));
+
+/**
+ * POST /campgrounds/:id/reviews
+ *
+ */
