@@ -4,13 +4,13 @@ const mongoose = require("mongoose");
 
 // Model
 const Campground = require("./models/campground");
-const Reivew = require("./models/reviews");
+const Review = require("./models/reviews");
 
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const { campgroundSchema } = require("./schema");
+const { campgroundSchema, reviewSchema } = require("./schema");
 
 // Mongoose 연결하기.
 mongoose.set("strictQuery", false);
@@ -33,6 +33,17 @@ app.engine("ejs", ejsMate);
 
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body);
+
+  if (error) {
+    const message = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(message, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
 
   if (error) {
     const message = error.details.map((el) => el.message).join(",");
@@ -74,7 +85,9 @@ app.get(
   "/campgrounds/:id",
   catchAsync(async (req, res) => {
     const id = req.params.id;
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate("reviews");
+
+    // console.log(campground);
 
     res.render("campgrounds/show", { campground });
   })
@@ -117,6 +130,19 @@ app.post(
 
     await review.save();
     await campground.save();
+
+    res.redirect(`/campgrounds/${campground._id}`);
+  })
+);
+
+app.delete(
+  "/campgrounds/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/campgrounds/${id}`);
   })
 );
 
