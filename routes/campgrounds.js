@@ -40,6 +40,7 @@ router.post(
     const campground = new Campground(req.body.campground);
     await campground.save();
 
+    // flash를 먼저 만들어준다.
     req.flash("success", "새로운 캠프를 만드는데 성공하였습니다.");
 
     res.redirect(`/campgrounds/${campground._id}`);

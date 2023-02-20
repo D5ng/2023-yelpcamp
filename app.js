@@ -44,6 +44,7 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+// 모든 요청에 flash가 있으면 locals를 통해 지역변수에 담는다.
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
