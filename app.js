@@ -4,12 +4,16 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
+const User = require("./models/user");
 
 // Mongoose 연결하기.
 mongoose.set("strictQuery", false);
@@ -44,6 +48,12 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // 모든 요청에 flash가 있으면 locals를 통해 지역변수에 담는다.
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
@@ -55,6 +65,13 @@ app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews);
 
 app.engine("ejs", ejsMate);
+
+app.get("/fakeUser", async (req, res) => {
+  const user = new User({ email: "dongs@gmail.com", username: "dongs" });
+  const newUser = await User.register(user, "ehdgus");
+
+  res.send(newUser);
+});
 
 app.get("/", (req, res) => {
   res.render("./home.ejs");
