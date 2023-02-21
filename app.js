@@ -19,9 +19,7 @@ const User = require("./models/user");
 // Mongoose 연결하기.
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(
-    "mongodb+srv://dongs:ehdgus1234@2023-yelp-camp.6h1bw49.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect("mongodb+srv://dongs:ehdgus1234@2023-yelp-camp.6h1bw49.mongodb.net/?retryWrites=true&w=majority")
   .then(() => console.log("MongoDB Success"))
   .catch((error) => console.log(error));
 
@@ -52,6 +50,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
+
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
