@@ -56,7 +56,6 @@ passport.deserializeUser(User.deserializeUser());
 
 // 모든 요청에 flash가 있으면 locals를 통해 지역변수에 담는다.
 app.use((req, res, next) => {
-  console.log("모든 미들웨어", req.session);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");

@@ -10,19 +10,12 @@
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted"><%= campground.location%></li>
+        <li class="list-group-item">submitted by <%= campground.author.username%></li>
         <li class="list-group-item">$<%= campground.price%>/night</li>
       </ul>
       <div class="card-body">
-        <a
-          class="card-link btn btn-info"
-          href="/campgrounds/<%=campground._id%>/edit"
-          >Edit</a
-        >
-        <form
-          class="d-inline"
-          action="/campgrounds/<%=campground._id%>?_method=DELETE"
-          method="POST"
-        >
+        <a class="card-link btn btn-info" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
+        <form class="d-inline" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
           <button class="btn btn-danger">Delete</button>
         </form>
       </div>
@@ -31,32 +24,14 @@
   </div>
   <div class="col-6">
     <h2>Leave a Review</h2>
-    <form
-      action="/campgrounds/<%= campground._id %>/reviews"
-      class="mb-3 validated-form"
-      method="POST"
-      novalidate
-    >
+    <form action="/campgrounds/<%= campground._id %>/reviews" class="mb-3 validated-form" method="POST" novalidate>
       <div class="mb-3">
         <label class="form-label" for="rating">Rating</label>
-        <input
-          class="form-range"
-          type="range"
-          min="1"
-          max="5"
-          id="rating"
-          name="review[rating]"
-        />
+        <input class="form-range" type="range" min="1" max="5" id="rating" name="review[rating]" />
       </div>
       <div class="mb-3">
         <label class="form-label" for="body">Review</label>
-        <textarea
-          class="form-control"
-          name="review[body]"
-          id="body"
-          rows="3"
-          required
-        ></textarea>
+        <textarea class="form-control" name="review[body]" id="body" rows="3" required></textarea>
         <div class="valid-feedback">Looks good!</div>
       </div>
       <button class="btn btn-success">Submit</button>
@@ -67,10 +42,7 @@
       <div class="card-body">
         <h5 class="card-title">Rating: <%= review.rating %></h5>
         <p class="card-text">Review: <%= review.body %></p>
-        <form
-          action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
-          method="POST"
-        >
+        <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
           <button class="btn btn-sm btn-danger">DELETE</button>
         </form>
       </div>
