@@ -1,13 +1,13 @@
 const { Router } = require("express");
 const router = Router();
 
-// Modles
+// Models
 const Campground = require("../models/campground");
 
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 
-const isLoggedIn = require("../middleware");
+const { isLoggedIn } = require("../middleware");
 
 const { campgroundSchema } = require("../schema");
 
@@ -24,6 +24,7 @@ const validateCampground = (req, res, next) => {
 
 router.get(
   "/",
+  // isLoggedIn,
   catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
 
